@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>All Recipes</h2>
+<a href="{% url 'recipe-create' %}" class="btn btn-primary mb-2">Create New Recipe</a>
+<div class="row">
+    {% for recipe in recipes %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="Recipe image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ recipe.title }}</h5>
+                    <a href="{% url 'recipe-detail' recipe.pk %}" class="btn btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
