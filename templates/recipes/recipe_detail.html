@@ -1,12 +1,70 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h2>{{ recipe.title }}</h2>
-<img src="{{ recipe.image.url }}" class="img-fluid">
+
+
+    
 <p>{{ recipe.description }}</p>
-<p><strong>Cooking time:</strong> {{ recipe.cooking_time }} mins</p>
+    
+<p><strong>Cooking time:</strong> {{ recipe.cooking_time }} minutes</p>
+    
 <p><strong>Category:</strong> {{ recipe.category }}</p>
+
+
+<p>
+    <strong>Author:</strong>
+    <a href="{% url 'public-profile' recipe.owner.username %}">
+        {{ recipe.owner.username }}
+    </a>
+</p>
+    
+
+
+{% if recipe.image %}
+    <img src="{{ recipe.image.url }}" class="img-fluid mb-3" alt="Recipe Image">
+{% endif %}    
+
+
 {% if user == recipe.owner %}
     <a href="{% url 'recipe-edit' recipe.pk %}" class="btn btn-warning">Edit</a>
     <a href="{% url 'recipe-delete' recipe.pk %}" class="btn btn-danger">Delete</a>
 {% endif %}
+    
+<form action="{% url 'toggle-like' recipe.pk %}" method="post" class="mb-3">
+    {% csrf_token %}
+    {% if has_liked %}
+        <button type="submit" class="btn btn-danger">Unlike</button>
+    {% else %}
+        <button type="submit" class="btn btn-primary">Like</button>
+    {% endif %}
+    <span>{{ recipe.likes.count }} likes</span>
+</form>
+
+
+
+<h4>Comments:</h4>
+<ul class="list-group mb-3">
+    {% for comment in recipe.comments.all %}
+        <li class="list-group-item">
+            <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+            <br>
+            <small class="text-muted">{{ comment.created_at }}</small>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No comments yet.</li>
+    {% endfor %}
+</ul>
+
+
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'add-comment' recipe.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-success">Add Comment</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+{% endif %}    
+
 {% endblock %}

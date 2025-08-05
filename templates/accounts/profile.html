@@ -1,9 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<h2>Your Profile</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-success">Update</button>
-</form>
+<h2>Профил на {{ user.username }}</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        {% if user.userprofile.profile_picture %}
+            <img src="{{ user.userprofile.profile_picture.url }}" class="img-thumbnail" alt="Profile picture">
+        {% else %}
+            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; font-size: 36px;">
+                {{ user.username|first|upper }}{{ user.username|slice:"1:2"|upper }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-success">Обнови</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

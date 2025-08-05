@@ -12,7 +12,7 @@ class Category(models.Model):
 
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='recipes/')
     cooking_time = models.PositiveIntegerField(help_text="Time in minutes")
     created_at = models.DateTimeField(auto_now_add=True)

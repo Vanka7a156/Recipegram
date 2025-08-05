@@ -3,7 +3,9 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserProfileForm
-
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from recipes.models import Recipe
 
 def register_view(request):
     if request.method == 'POST':
@@ -44,3 +46,12 @@ def profile_view(request):
     else:
         form = UserProfileForm(instance=profile)
     return render(request, 'accounts/profile.html', {'form': form})
+
+
+def public_profile_view(request, username):
+    user = get_object_or_404(User, username=username)
+    recipes = Recipe.objects.filter(owner=user)
+    return render(request, 'accounts/public_profile.html', {
+        'profile_user': user,
+        'recipes': recipes,
+    })
