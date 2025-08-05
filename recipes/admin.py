@@ -28,3 +28,9 @@ class CategoryAdmin(admin.ModelAdmin):
 class LikeAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
     search_fields = ('user__username', 'recipe__title')
+
+
+class SafeRecipeAdmin(admin.ModelAdmin):
+    # ...
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
